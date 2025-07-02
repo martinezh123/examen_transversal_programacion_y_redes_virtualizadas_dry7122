@@ -1,0 +1,15 @@
+---
+- name: A través de Ansible, deberá crear un playbook que permita asignar direccionamiento IPv6 3001:ABCD:ABCD:1::1/128 y link local FE80::1 a la interfaz loopback 33
+  hosts: CSR1kv
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: ASIGNAR IPV6 A LOOPBACK33
+      ios_config:
+        parents: "interface loopback33"
+        lines:
+          - ipv6 add 3001:ABCD:ABCD:1::1/128
+          - ipv6 add FE80::1 link-local
+      register: ipv6
+
+
