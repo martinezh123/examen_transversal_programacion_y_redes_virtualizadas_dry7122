@@ -1,0 +1,16 @@
+---
+- name: A través de Ansible ,deberá crear un playbook que permita generar un respaldo de la configuración del router con el comando show running-config
+  hosts: CSR1kv
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: SHOW RUN EXAMEN
+      ios_command:
+        commands:
+          - show run
+      register: shrun
+
+    - name: GUARDAR RESULTADO DE SHOW RUN
+      copy:
+        content: "{{ shrun.stdout[0] }}"
+        dest: "show_run_examen2025_{{ inventory_hostname }}.txt"
