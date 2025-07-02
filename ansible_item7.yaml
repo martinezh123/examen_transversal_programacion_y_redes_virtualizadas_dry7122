@@ -1,0 +1,44 @@
+---
+- name: Item7 Se solicita obtener información del router CSR1000v utilizando ansible en Yaml
+  hosts: CSR1kv
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: CREAR EIGRP EN IPV4
+      ios_config:
+        parents: "router eigrp 100"
+        lines:
+          - passive-interface g1
+      register: ipv4
+
+    - name: CREAR EIGRP EN IPV6
+      ios_config:
+        lines:
+          - ipv6 router eigrp 100
+          - passive-interface g1
+          - no shutdown
+          - end
+      register: ipv6
+
+    - name: OBTENER INFORMACION DE IP E INTERFACES
+      ios_command:
+        commands:
+          - show ip int brief
+      register: intbrief
+
+    - name: SHOW RUN EXAMEN ITEM 7
+      ios_command:
+        commands:
+          - show run
+      register: shrunitem7
+
+    - name: SHOW VERSION
+      ios_command:
+        commands:
+          - show version
+      register: shver
+
+    - name: TODO
+      copy:
+        content: "{{ ipv4.commands[0] }}{{ ipv6.commands[0] }}{{ intbrief.stdout[0] }}{{ shrunitem7.stdout[0] }}{{ shver.stdout[0] }}"
+        dest: "item7_{{ inventory_hostname }}.txt"
